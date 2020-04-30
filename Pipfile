@@ -1,0 +1,47 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+asn1crypto = "==0.24.0"
+beautifulsoup4 = "==4.6.0"
+cffi = "==1.12.3"
+chardet = "==3.0.4"
+click = "==7.1.1"
+cryptography = "==2.1.4"
+enum34 = "==1.1.6"
+gunicorn = "==19.10.0"
+html5lib = "==0.999999999"
+idna = "==2.6"
+ipaddress = "==1.0.17"
+itsdangerous = "==1.1.0"
+keyring = "==10.6.0"
+lxml = "==4.2.1"
+olefile = "==0.45.1"
+pam = "==0.4.2"
+persistent = "==4.5.0"
+pexpect = "==4.2.1"
+pycairo = "==1.16.2"
+pycparser = "==2.19"
+pycrypto = "==2.6.1"
+pyinotify = "==0.9.6"
+pyxdg = "==0.25"
+six = "==1.11.0"
+webencodings = "==0.5"
+xlrd = "==1.2.0"
+BTrees = "==4.6.0"
+Flask = "==1.1.1"
+Jinja2 = "==2.11.1"
+"keyrings.alt" = "==3.0"
+MarkupSafe = "==1.1.1"
+Pillow = "==5.1.0"
+PyGObject = "==3.26.1"
+SecretStorage = "==2.3.1"
+Werkzeug = "==1.0.0"
+"zope.interface" = "==4.6.0"
+
+[requires]
+python_version = "3.6"
