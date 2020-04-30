@@ -61,7 +61,7 @@ def add_hamburguesa():
   all_mezclas = Mezcla.query.all()
   for i in all_mezclas:
     if int(i.id_hamburguesa) == int(nueva_hamburguesa.id):
-      string += "\n      \"path\": localhost:5000/ingrediente/"+str(i.id_ingrediente)   #https://
+      string += "\n      \"path\": \"https://api-santacruz17.herokuapp.com/"+str(i.id_ingrediente)+"\""   #https://
 
   string += "\n    }\n  ]\n}"
 
