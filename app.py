@@ -44,10 +44,13 @@ hamburguesas_schema = HamburguesaSchema(many=True)
 # Create a Product
 @app.route('/hamburguesa', methods=['POST'])
 def add_hamburguesa():
-  nombre = request.json['nombre']
-  precio = request.json['precio']
-  descripcion = request.json['descripcion']
-  imagen = request.json['imagen']
+  try:
+    nombre = request.json['nombre']
+    precio = request.json['precio']
+    descripcion = request.json['descripcion']
+    imagen = request.json['imagen']
+  except (ValueError, KeyError, TypeError):
+    return "input invalido", "400 input invalido"
 
   nueva_hamburguesa = Hamburguesa(nombre, precio, descripcion, imagen)
 
@@ -83,7 +86,7 @@ def get_hamburguesas():
     all_mezclas = Mezcla.query.all()
     for i in all_mezclas:
       if int(i.id_hamburguesa) == int(k['id']):
-        string += "      {\n        \"path\": localhost:5000/ingrediente/" + str(i.id_ingrediente) + "\n      },\n" # https://
+        string += "      {\n        \"path\": \"https://api-santacruz17.herokuapp.com/ingrediente/" + str(i.id_ingrediente) + "\"\n      },\n" # https://
 
     if string[-2] == "[":
       string += "    ]\n  },\n"
@@ -108,7 +111,7 @@ def get_hamburguesa(id):
   all_mezclas = Mezcla.query.all()
   for i in all_mezclas:
     if int(i.id_hamburguesa) == int(id):
-      string += "    {\n      \"path\": localhost:5000/ingrediente/" + str(i.id_ingrediente) + "\n    },\n" # https://
+      string += "    {\n      \"path\": \"https://api-santacruz17.herokuapp.com/ingrediente/" + str(i.id_ingrediente) + "\"\n    },\n" # https://
 
   if string[-2] == "[":
     string += "  ]\n}"
@@ -121,11 +124,15 @@ def get_hamburguesa(id):
 @app.route('/hamburguesa/<id>', methods=['PATCH'])
 def update_hamburguesa(id):
   hamburguesa = Hamburguesa.query.get(id)
-
-  nombre = request.json['nombre']
-  precio = request.json['precio']
-  descripcion = request.json['descripcion']
-  imagen = request.json['imagen']
+  if not hamburguesa:
+    return "Hamburguesa inexistente", "400 Hamburguesa inexistente"
+  try:
+    nombre = request.json['nombre']
+    precio = request.json['precio']
+    descripcion = request.json['descripcion']
+    imagen = request.json['imagen']
+  except (ValueError, KeyError, TypeError):
+    return "Parametros invalidos", "400 Parametros invalidos"
 
   hamburguesa.nombre = nombre
   hamburguesa.precio = precio
@@ -134,7 +141,20 @@ def update_hamburguesa(id):
 
   db_hamburguesa.session.commit()
 
-  return hamburguesa_schema.jsonify(hamburguesa)
+  string = "{\n  \"id\": " + str(id) + ",\n  \"nombre\": \"" + hamburguesa.nombre + "\",\n  \"precio\": " + str(
+    hamburguesa.precio) + ",\n  \"descripcion\": \"" + hamburguesa.descripcion + "\",\n  \"imagen\": \"" + hamburguesa.imagen + "\"\n  \"ingredientes\": [\n"
+
+  all_mezclas = Mezcla.query.all()
+  for i in all_mezclas:
+    if int(i.id_hamburguesa) == int(id):
+      string += "    {\n      \"path\": \"https://api-santacruz17.herokuapp.com/ingrediente/" + str(i.id_ingrediente) + "\"\n    },\n" # https://
+
+  if string[-2] == "[":
+    string += "  ]\n}"
+  else:
+    string = string[:-2] + "\n  ]\n}"
+
+  return string, "200 operacion exitosa"
 
 # Delete Product
 @app.route('/hamburguesa/<id>', methods=['DELETE'])
@@ -146,7 +166,7 @@ def delete_hamburguesa(id):
   db_hamburguesa.session.commit()
 
 
-  return hamburguesa_schema.jsonify(hamburguesa), "200 hamburguesa eliminada"
+  return "hamburguesa eliminada", "200 hamburguesa eliminada"
 
 
 
@@ -176,8 +196,11 @@ ingredientes_schema = HamburguesaSchema(many=True)
 # Create a Product
 @app.route('/ingrediente', methods=['POST'])
 def add_ingrediente():
-  nombre = request.json['nombre']
-  descripcion = request.json['descripcion']
+  try:
+    nombre = request.json['nombre']
+    descripcion = request.json['descripcion']
+  except (ValueError, KeyError, TypeError):
+    return "input invalido", "400 input invalido"
 
   nuevo_ingrediente = Ingrediente(nombre, descripcion)
 
@@ -186,7 +209,7 @@ def add_ingrediente():
 
   db_ingredientes.session.refresh(nuevo_ingrediente)
 
-  return "{\n  \"id\": "+ str(nuevo_ingrediente.id)+",\n  \"nombre\": "+nombre+",\n  \"descripcion\": "+descripcion+"\n}", "201 ingrediente creado"
+  return "{\n  \"id\": "+ str(nuevo_ingrediente.id)+",\n  \"nombre\": \""+nombre+"\",\n  \"descripcion\": \""+descripcion+"\"\n}", "201 ingrediente creado"
 
 # Get All Products
 @app.route('/ingrediente', methods=['GET'])
@@ -196,7 +219,7 @@ def get_ingredientes():
   string = "["
   for i in result:
     string += "\n  {"
-    string += "\n    \"id\": "+str(i['id'])+",\n    \"nombre\": "+str(i['nombre'])+",\n    \"descripcion\": "+str(i['descripcion'])
+    string += "\n    \"id\": "+str(i['id'])+",\n    \"nombre\": \""+str(i['nombre'])+"\",\n    \"descripcion\": \""+str(i['descripcion']) + "\""
     string += "\n  }"
   string += "\n]"
   return string, "200 resultados obtenidos"
@@ -209,7 +232,7 @@ def get_ingrediente(id):
     return "id invalido", "400 id invalido"
   if not ingrediente:
     return "ingrediente inexistente", "404 ingrediente inexistente"
-  string = "{\n  \"id\": " + id + ",\n  \"nombre\": " + ingrediente.nombre + ",\n  \"descrpcion\": " + ingrediente.descripcion + "\n}"
+  string = "{\n  \"id\": " + str(id) + ",\n  \"nombre\": \"" + ingrediente.nombre + "\",\n  \"descrpcion\": \"" + ingrediente.descripcion + "\"\n}"
   return string, "200 operacion exitosa"
 
 # Delete Product
