@@ -49,7 +49,14 @@ def add_hamburguesa():
     precio = request.json['precio']
     descripcion = request.json['descripcion']
     imagen = request.json['imagen']
+    if not precio.isdigit():
+      return "input invalido", "400 input invalido"
+    else:
+      precio = int(precio)
   except (ValueError, KeyError, TypeError):
+    return "input invalido", "400 input invalido"
+  lista = request.json
+  if len(lista) != 4:
     return "input invalido", "400 input invalido"
 
   nueva_hamburguesa = Hamburguesa(nombre, precio, descripcion, imagen)
@@ -69,7 +76,6 @@ def add_hamburguesa():
   string += "\n    }\n  ]\n}"
 
   return string, "201 hamburguesa creada"
-  #falta hacer el 400 input invalido
 
 # Get All Products
 @app.route('/hamburguesa', methods=['GET'])
@@ -123,28 +129,43 @@ def get_hamburguesa(id):
 # Update a Product
 @app.route('/hamburguesa/<id>', methods=['PATCH'])
 def update_hamburguesa(id):
+  cant = 0
   hamburguesa = Hamburguesa.query.get(id)
   if not hamburguesa:
     return "Hamburguesa inexistente", "400 Hamburguesa inexistente"
+  lista = request.json
+  if len(lista) > 4:
+    return "Parametros invalido", "400 Parametros invalido"
   try:
     nombre = request.json['nombre']
     hamburguesa.nombre = nombre
+    cant += 1
   except (ValueError, KeyError, TypeError):
-    return "Parametros invalidos", "400 Parametros invalidos"
+    pass
   try:
     precio = request.json['precio']
     hamburguesa.precio = precio
+    if not precio.isdigit():
+      return "input invalido", "400 input invalido"
+    else:
+      precio = int(precio)
+    cant += 1
   except (ValueError, KeyError, TypeError):
-    return "Parametros invalidos", "400 Parametros invalidos"
+    pass
   try:
     descripcion = request.json['descripcion']
     hamburguesa.descripcion = descripcion
+    cant += 1
   except (ValueError, KeyError, TypeError):
-    return "Parametros invalidos", "400 Parametros invalidos"
+    pass
   try:
     imagen = request.json['imagen']
     hamburguesa.imagen = imagen
+    cant += 1
   except (ValueError, KeyError, TypeError):
+    pass
+
+  if cant == 0:
     return "Parametros invalidos", "400 Parametros invalidos"
 
   db_hamburguesa.session.commit()
@@ -204,6 +225,9 @@ ingredientes_schema = HamburguesaSchema(many=True)
 # Create a Product
 @app.route('/ingrediente', methods=['POST'])
 def add_ingrediente():
+  lista = request.json
+  if len(lista) > 2:
+    return "input invalido", "400 input invalido"
   try:
     nombre = request.json['nombre']
     descripcion = request.json['descripcion']
