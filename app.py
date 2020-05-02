@@ -133,9 +133,6 @@ def update_hamburguesa(id):
   hamburguesa = Hamburguesa.query.get(id)
   if not hamburguesa:
     return "Hamburguesa inexistente", "400 Hamburguesa inexistente"
-  lista = request.json
-  if len(lista) > 4:
-    return "Parametros invalido", "400 Parametros invalido"
   try:
     nombre = request.json['nombre']
     hamburguesa.nombre = nombre
@@ -144,11 +141,6 @@ def update_hamburguesa(id):
     pass
   try:
     precio = request.json['precio']
-    hamburguesa.precio = precio
-    if not precio.isdigit():
-      return "input invalido", "400 input invalido"
-    else:
-      precio = int(precio)
     cant += 1
   except (ValueError, KeyError, TypeError):
     pass
@@ -165,8 +157,17 @@ def update_hamburguesa(id):
   except (ValueError, KeyError, TypeError):
     pass
 
+  if not precio.isdigit():
+    return "input invalido", "400 input invalido"
+  else:
+    precio = int(precio)
+    hamburguesa.precio = precio
+
   if cant == 0:
     return "Parametros invalidos", "400 Parametros invalidos"
+  lista = request.json
+  if len(lista) > 4:
+    return "Parametros invalido", "400 Parametros invalido"
 
   db_hamburguesa.session.commit()
 
@@ -225,13 +226,13 @@ ingredientes_schema = HamburguesaSchema(many=True)
 # Create a Product
 @app.route('/ingrediente', methods=['POST'])
 def add_ingrediente():
-  lista = request.json
-  if len(lista) > 2:
-    return "input invalido", "400 input invalido"
   try:
     nombre = request.json['nombre']
     descripcion = request.json['descripcion']
   except (ValueError, KeyError, TypeError):
+    return "input invalido", "400 input invalido"
+  lista = request.json
+  if len(lista) > 2:
     return "input invalido", "400 input invalido"
 
   nuevo_ingrediente = Ingrediente(nombre, descripcion)
