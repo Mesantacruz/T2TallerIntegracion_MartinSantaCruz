@@ -128,16 +128,24 @@ def update_hamburguesa(id):
     return "Hamburguesa inexistente", "400 Hamburguesa inexistente"
   try:
     nombre = request.json['nombre']
-    precio = request.json['precio']
-    descripcion = request.json['descripcion']
-    imagen = request.json['imagen']
+    hamburguesa.nombre = nombre
   except (ValueError, KeyError, TypeError):
     return "Parametros invalidos", "400 Parametros invalidos"
-
-  hamburguesa.nombre = nombre
-  hamburguesa.precio = precio
-  hamburguesa.descripcion = descripcion
-  hamburguesa.imagen = imagen
+  try:
+    precio = request.json['precio']
+    hamburguesa.precio = precio
+  except (ValueError, KeyError, TypeError):
+    return "Parametros invalidos", "400 Parametros invalidos"
+  try:
+    descripcion = request.json['descripcion']
+    hamburguesa.descripcion = descripcion
+  except (ValueError, KeyError, TypeError):
+    return "Parametros invalidos", "400 Parametros invalidos"
+  try:
+    imagen = request.json['imagen']
+    hamburguesa.imagen = imagen
+  except (ValueError, KeyError, TypeError):
+    return "Parametros invalidos", "400 Parametros invalidos"
 
   db_hamburguesa.session.commit()
 
