@@ -45,19 +45,20 @@ hamburguesas_schema = HamburguesaSchema(many=True)
 @app.route('/hamburguesa', methods=['POST'])
 def add_hamburguesa():
   try:
-    nombre = request.json['nombre']
+    nombre = str(request.json['nombre'])
     precio = request.json['precio']
-    descripcion = request.json['descripcion']
-    imagen = request.json['imagen']
-    if not precio.isdigit():
-      return "input invalido", "400 input invalido"
-    else:
-      precio = int(precio)
+    descripcion = str(request.json['descripcion'])
+    imagen = str(request.json['imagen'])
   except (ValueError, KeyError, TypeError):
     return "input invalido", "400 input invalido"
   lista = request.json
   if len(lista) != 4:
     return "input invalido", "400 input invalido"
+
+  if not precio.isdigit():
+    return "input invalido", "400 input invalido"
+  else:
+    precio = int(precio)
 
   nueva_hamburguesa = Hamburguesa(nombre, precio, descripcion, imagen)
 
@@ -134,7 +135,7 @@ def update_hamburguesa(id):
   if not hamburguesa:
     return "Hamburguesa inexistente", "400 Hamburguesa inexistente"
   try:
-    nombre = request.json['nombre']
+    nombre = str(request.json['nombre'])
     hamburguesa.nombre = nombre
     cant += 1
   except (ValueError, KeyError, TypeError):
@@ -145,13 +146,13 @@ def update_hamburguesa(id):
   except (ValueError, KeyError, TypeError):
     pass
   try:
-    descripcion = request.json['descripcion']
+    descripcion = str(request.json['descripcion'])
     hamburguesa.descripcion = descripcion
     cant += 1
   except (ValueError, KeyError, TypeError):
     pass
   try:
-    imagen = request.json['imagen']
+    imagen = str(request.json['imagen'])
     hamburguesa.imagen = imagen
     cant += 1
   except (ValueError, KeyError, TypeError):
@@ -227,8 +228,8 @@ ingredientes_schema = HamburguesaSchema(many=True)
 @app.route('/ingrediente', methods=['POST'])
 def add_ingrediente():
   try:
-    nombre = request.json['nombre']
-    descripcion = request.json['descripcion']
+    nombre = str(request.json['nombre'])
+    descripcion = str(request.json['descripcion'])
   except (ValueError, KeyError, TypeError):
     return "input invalido", "400 input invalido"
   lista = request.json
