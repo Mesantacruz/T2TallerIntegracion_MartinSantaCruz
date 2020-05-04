@@ -26,11 +26,12 @@ class Hamburguesa(db_hamburguesa.Model):
   #ingredientes = db_hamburguesa.Column(db_hamburguesa.ARRAY(db_hamburguesa.String))
 
   def __init__(self, nombre, precio, descripcion, imagen):
+    #self.id = int()
     self.nombre = nombre
     self.precio = precio
     self.descripcion = descripcion
     self.imagen = imagen
-    #self.ingredientes = list()
+    self.ingredientes = list()
 
 # Product Schema
 class HamburguesaSchema(ma.Schema):
@@ -55,10 +56,10 @@ def add_hamburguesa():
   if len(lista) != 4:
     return "input invalido", "400 input invalido"
 
-  if not precio.isdigit():
-    return "input invalido", "400 input invalido"
-  else:
+  try:
     precio = int(precio)
+  except (ValueError):
+    return "input invalido", "400 input invalido"
 
   nueva_hamburguesa = Hamburguesa(nombre, precio, descripcion, imagen)
 
@@ -158,16 +159,17 @@ def update_hamburguesa(id):
   except (ValueError, KeyError, TypeError):
     pass
 
-  if not precio.isdigit():
-    return "input invalido", "400 input invalido"
-  else:
+
+  try:
     precio = int(precio)
-    hamburguesa.precio = precio
+  except (ValueError):
+    return "Parametros invalidos", "400 Parametros invalidos"
+  hamburguesa.precio = precio
 
   if cant == 0:
     return "Parametros invalidos", "400 Parametros invalidos"
   lista = request.json
-  if len(lista) > 4:
+  if len(lista) != cant:
     return "Parametros invalido", "400 Parametros invalido"
 
   db_hamburguesa.session.commit()
