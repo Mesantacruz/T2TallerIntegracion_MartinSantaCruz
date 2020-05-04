@@ -268,7 +268,7 @@ def get_ingrediente(id):
     return "id invalido", "400 id invalido"
   if not ingrediente:
     return "ingrediente inexistente", "404 ingrediente inexistente"
-  string = "{\n  \"id\": " + str(id) + ",\n  \"nombre\": \"" + ingrediente.nombre + "\",\n  \"descrpcion\": \"" + ingrediente.descripcion + "\"\n}"
+  string = "{\n  \"id\": " + str(id) + ",\n  \"nombre\": \"" + ingrediente.nombre + "\",\n  \"descripcion\": \"" + ingrediente.descripcion + "\"\n}"
   return string, "200 operacion exitosa"
 
 # Delete Product
