@@ -210,6 +210,20 @@ def delete_hamburguesa(id):
   hamburguesa = Hamburguesa.query.get(id)
   if not hamburguesa:
     return "hamburguesa inexistente", "404 hamburguesa inexistente"
+
+  mezclas = []
+
+  all_mezclas = Mezcla.query.all()
+  for i in all_mezclas:
+    if int(i.id_hamburguesa) == int(id):
+      mezclas.append(i)
+
+
+  if mezclas:
+    for i in mezclas:
+      db_mezcla.session.delete(i)
+      db_mezcla.session.commit()
+
   db_hamburguesa.session.delete(hamburguesa)
   db_hamburguesa.session.commit()
 
