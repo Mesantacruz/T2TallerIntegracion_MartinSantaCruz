@@ -19,7 +19,7 @@ ma = Marshmallow(app)
 # Product Class/Model
 class Hamburguesa(db_hamburguesa.Model):
   id = db_hamburguesa.Column(db_hamburguesa.Integer, primary_key=True)
-  nombre = db_hamburguesa.Column(db_hamburguesa.String, unique=True)
+  nombre = db_hamburguesa.Column(db_hamburguesa.String)
   precio = db_hamburguesa.Column(db_hamburguesa.Integer)
   descripcion = db_hamburguesa.Column(db_hamburguesa.String)
   imagen = db_hamburguesa.Column(db_hamburguesa.String)
@@ -239,7 +239,7 @@ def delete_hamburguesa(id):
 # Product Class/Model
 class Ingrediente(db_ingredientes.Model):
   id = db_ingredientes.Column(db_ingredientes.Integer, primary_key=True)
-  nombre = db_ingredientes.Column(db_ingredientes.String, unique=True)
+  nombre = db_ingredientes.Column(db_ingredientes.String)
   descripcion = db_ingredientes.Column(db_ingredientes.String)
 
   def __init__(self, nombre, descripcion):
